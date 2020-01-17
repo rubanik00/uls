@@ -20,8 +20,8 @@ static char **clear_d_str(st_general *gnr) {
 
 void mx_print_folder_search(st_general *gnr) {
 	char **temp = clear_d_str(gnr);
-	// argc += 0;
-	// b_sort(temp, 5);
+	//argc += 0;
+	//b_sort(temp, 5);
 	for (int i = 1; temp[i]; ++i) {
 		mx_printstr(temp[i]);
 		mx_printstr("\t");
