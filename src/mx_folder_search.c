@@ -13,10 +13,12 @@ char **mx_folder_serch(int argc, char *argv[]) {
             mx_printerr(argv[i]);
             mx_printerr_exit(": No such file or directory\n");
         }
-        while((ds = readdir(dptr)) != 0) {
-            temp[count] = malloc(sizeof(char*) * mx_strlen(ds->d_name));
-            temp[count] = ds->d_name;
-            count++;
+        while((ds = readdir(dptr)) != NULL) {
+            if (ds->d_name[0] != '.') {
+                temp[count] = malloc(sizeof(char*) * mx_strlen(ds->d_name));
+                temp[count] = ds->d_name;
+                count++;
+            }
         }
     }
     closedir(dptr);
