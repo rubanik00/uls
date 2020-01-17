@@ -10,7 +10,7 @@ void mx_uls_no_flags(int argc, char *argv[]) {
 			gnr->d_str = mx_folder_serch(argc, argv);
 			mx_print_folder_search(gnr);
 		}
-		if (argv[1][0] == '-' && argv[1][1]) {
+		else if (argv[1][0] == '-' && argv[1][1]) {
 			mx_printchar('1');
 		}
 		else {

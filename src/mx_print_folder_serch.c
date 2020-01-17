@@ -20,13 +20,23 @@ static char **clear_d_str(st_general *gnr) {
 
 void mx_print_folder_search(st_general *gnr) {
 	char **temp = clear_d_str(gnr);
-	//argc += 0;
+	int i = 1;
+
 	//b_sort(temp, 5);
-	for (int i = 1; temp[i]; ++i) {
+	if (isatty(1)) {
+		for (i = 1; temp[i] && temp[i+1] != NULL; ++i) {
+			mx_printstr(temp[i]);
+			mx_printstr("\t");
+		}
 		mx_printstr(temp[i]);
-		mx_printstr("\t");
+		mx_printchar('\n');
 	}
-	mx_printchar('\n');
+	else {
+		for (i = 1; temp[i]; i++) {
+			mx_printstr(temp[i]);
+			mx_printchar('\n');
+		}
+	}
 }
 
 // static void b_sort(char **arr, int size) { 

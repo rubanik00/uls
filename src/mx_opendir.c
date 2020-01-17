@@ -1,11 +1,22 @@
 #include "uls_header.h"
 
 static void print_opendir(int count, char **temp) {
-    for (int i = 2; i < count; ++i) {
+    int i = 2;
+
+    if (isatty(1)) {
+        for (i = 2; i < count - 1; ++i) {
+            mx_printstr(temp[i]);
+        	mx_printstr("\t");
+        }
         mx_printstr(temp[i]);
-    	mx_printstr("\t");
+        mx_printchar('\n');
     }
-    mx_printchar('\n');
+    else {
+        for (i = 2; i < count; ++i) {
+            mx_printstr(temp[i]);
+            mx_printstr("\n");
+        }
+    }
 }
 
 void mx_opendir() {
