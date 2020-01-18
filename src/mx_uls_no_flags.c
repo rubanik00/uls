@@ -11,7 +11,7 @@ void mx_uls_no_flags(int argc, char *argv[]) {
 			mx_print_folder_search(gnr);
 		}
 		else if (argv[1][0] == '-' && argv[1][1]) {
-			mx_printchar('1');
+			mx_flag_parse(argv);
 		}
 		else {
 			mx_printerr("uls: ");
