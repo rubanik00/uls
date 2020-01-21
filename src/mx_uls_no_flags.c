@@ -4,7 +4,7 @@ void mx_uls_no_flags(int argc, char *argv[]) {
     st_general *gnr = (st_general*)malloc(sizeof(st_general));
 
 	if (argc == 1)
-		mx_opendir();
+		mx_opendir(argc, argv);
 	if (argc > 1) {
 		if (argv[1][0] != '-') {
 			gnr->d_str = mx_folder_serch(argc, argv);

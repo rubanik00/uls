@@ -56,4 +56,3 @@ void mx_print_folder_search(st_general *gnr) {
 		}
 	}
 }
-

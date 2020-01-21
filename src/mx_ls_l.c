@@ -9,24 +9,21 @@ static const char *getUserName() {
     return "";
 }
 
-static void *getGroupName(char *file_name) {
-    struct stat info;
-    lstat(file_name, &info);
-    struct group *grp = getgrgid(info.st_gid);
+static void *getGroupName(struct stat fileStat) {
+    struct group *grp = getgrgid(fileStat.st_gid);
 
     if (grp)
         return mx_strdup(grp->gr_name);
     else
-        return mx_itoa(info.st_gid);
+        return mx_itoa(fileStat.st_gid);
 }
 
 static void edit_time(char *t) {
-    for(int i = 4; i < 16; i++) {
+    for(int i = 4; i < 16; i++)
         mx_printchar(t[i]);
-    }
 }
 
-static void print_frst(struct stat fileStat) {
+static void print_per(struct stat fileStat) {
 
     mx_printstr( (S_ISDIR(fileStat.st_mode)) ? "d" : "-");
     mx_printstr( (fileStat.st_mode & S_IRUSR) ? "r" : "-");
@@ -41,23 +38,39 @@ static void print_frst(struct stat fileStat) {
     mx_printstr("  ");
 }
 
-int mx_ls_l(char *file_name) {
-    struct stat fileStat;
+static void print_other(struct stat fileStat, char **file_name, int i) {
 
-    if(stat(file_name, &fileStat) < 0)    
-        return 1;
-    print_frst(fileStat);
     mx_printint(fileStat.st_nlink);
     mx_printstr(" ");
     mx_printstr(getUserName());
     mx_printstr("  ");
-    mx_printstr(getGroupName(file_name));
+    mx_printstr(getGroupName(fileStat));
     mx_printstr("  ");
     mx_printint(fileStat.st_size);
     mx_printstr(" ");
     edit_time(ctime(&fileStat.st_mtime)); 
     mx_printstr("\t");
-    mx_printstr(file_name);
+    mx_printstr(file_name[i]);
     mx_printstr("\n");
-    return 0;
+}
+
+void mx_ls_l(int argc, char *dirname, char **file_name) {
+    struct stat fileStat;
+    int i = 0;
+    char *tmp = NULL;
+    char *res = NULL;
+
+    while(file_name[i]) {  
+        if (argc > 2) {
+            tmp = mx_strjoin(dirname, "/");
+            res = mx_strjoin(tmp, file_name[i]);
+            lstat(res, &fileStat);
+        }
+        else {
+            lstat(file_name[i], &fileStat);
+        }
+        print_per(fileStat);
+        print_other(fileStat, file_name, i);
+        i++;
+    }
 }
