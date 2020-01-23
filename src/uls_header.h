@@ -38,6 +38,5 @@ char **mx_folder_serch(int argc, char *argv[]);
 void mx_opendir(int argc, char **argv);
 void mx_flag_parse(char *argv[]);
 void mx_ls_l(int argc, char *dirname, char **file_name);
-int test(int argc, char *argv[]);
-
+void mx_ls_big_r(char **file_name);
 #endif

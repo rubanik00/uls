@@ -69,6 +69,7 @@ void mx_ls_l(int argc, char *dirname, char **file_name) {
         else {
             lstat(file_name[i], &fileStat);
         }
+        mx_printstr(file_name[i]);
         print_per(fileStat);
         print_other(fileStat, file_name, i);
         i++;
