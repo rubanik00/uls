@@ -28,23 +28,16 @@ static char **l_r_parse(char *dirname) {
 
 void mx_ls_big_r(char **fileName) {
     struct stat fileStat;
-    int count = 0;
 
-    mx_print_strarr(fileName, " "); // 
+    // mx_print_strarr(fileName, " ");
     for (int i = 0; fileName[i]; i++) {
         lstat(fileName[i], &fileStat);
-        if (fileStat.st_mode == 16877) {
+        if (S_ISDIR(fileStat.st_mode)) {
+            mx_printstr("./");
             mx_printstr(fileName[i]);
-            mx_printstr(": \n");
+            mx_printstr(":\n");
             char **tmp = l_r_parse(fileName[i]);
-            mx_print_strarr(tmp, " ");
-        }
-        else if (fileStat.st_mode == 33188 || fileStat.st_mode == 33261)
-            count++;
-        else {
-            mx_printstr("ERR");
-            mx_printstr(fileName[i]);
-            mx_printstr("\n");
+            mx_print_strarr(tmp, "\t");
         }
     }
 }
