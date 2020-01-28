@@ -40,6 +40,10 @@ void mx_flag_parse(char *argv[]);
 void mx_ls_l(int argc, char *dirname, char **file_name);
 void mx_ls_big_r(char **file_name);
 int mx_cmp_t(char *s1, char *s2);
-int mx_custom_bubble_sort(char **temp, int size, int f(char *s1, char *s2));
+int mx_custom_bubble_sort(char **temp, int f(char*, char*));
+int mx_cmp_S(char *s1, char *s2);
+int mx_cmp_r(char *s1, char *s2);
+int mx_cmp_u(char *s1, char *s2);
+int mx_cmp_c(char *s1, char *s2);
 
 #endif

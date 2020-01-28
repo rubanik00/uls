@@ -1,10 +1,14 @@
 #include "uls_header.h"
 
-int mx_custom_bubble_sort(char **temp, int size, int f(char *s1, char *s2)) {
+int mx_custom_bubble_sort(char **temp, int f(char*, char*)) {
     char *buf = NULL;
+    int count = 0;
 
-    for (int i = 0; i < size - 1; i++) {
-        for (int j = 0; j < size - i - 1; j++){
+    while (temp[count])
+        count++;
+    
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
             if (f(temp[j], temp[j + 1]) > 0) {
                 buf = temp[j];
                 temp[j] = temp[j + 1];
@@ -12,6 +16,7 @@ int mx_custom_bubble_sort(char **temp, int size, int f(char *s1, char *s2)) {
             }
         }
     }
-    mx_print_strarr(temp, " ");
+    
+    mx_print_strarr(temp, "\n");
     return 0;
 }
