@@ -18,32 +18,34 @@ typedef struct general {
     char **d_str;
 }   st_general;
 
-typedef struct flag_l {
-    char *total;        // Тотал в начале ls -l
-    int total_count;    // Размер всех файлов
-    char *permission;   // Уровень доступа +
-    int links;          // Количество ссылок на файл +
-    char *owner_name;   // Имя владельца 
-    char *group_name;   // Имя группы
-    int file_weight;    // Вес файла (в байтах) +
-    char *month;        // Месяц
-    int date;           // Число
-    int time;           // Время
-    char *file_name;    // Имя файла
-}   st_flag_l;
 
-void mx_print_folder_search(st_general *gnr);
-void mx_uls_no_flags(int argc, char *argv[]);
-char **mx_folder_serch(int argc, char *argv[]);
+// Open DIR + parser
 void mx_opendir(int argc, char **argv);
+void mx_uls_no_flags(int argc, char *argv[]);
 void mx_flag_parse(char *argv[]);
+char **mx_folder_serch(int argc, char *argv[]);
+void mx_print_folder_search(st_general *gnr);
+//
+// smal L flag
 void mx_ls_l(int argc, char *dirname, char **file_name);
+const char *mx_getUserName();
+void *mx_getGroupName(struct stat fileStat);
+void mx_edit_time(char *t);
+void mx_print_per(struct stat fileStat);
+//
+// Big R flag
 void mx_ls_big_r(char **file_name);
-int mx_cmp_t(char *s1, char *s2);
+//
+// Sort flags
 int mx_custom_bubble_sort(char **temp, int f(char*, char*));
+int mx_cmp_t(char *s1, char *s2);
 int mx_cmp_S(char *s1, char *s2);
 int mx_cmp_r(char *s1, char *s2);
 int mx_cmp_u(char *s1, char *s2);
 int mx_cmp_c(char *s1, char *s2);
+//
+// smal G flag
+void mx_ls_g(int argc, char *dirname, char **file_name);
+//
 
 #endif

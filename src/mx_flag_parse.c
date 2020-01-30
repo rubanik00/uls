@@ -13,4 +13,3 @@ void mx_flag_parse(char *argv[]) {
             break;
         }
 }
-

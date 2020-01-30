@@ -84,9 +84,10 @@ void mx_opendir(int argc, char *argv[]) {
             mx_printstr(argv[i]);
             mx_printstr(":\ntotal 0\n");
         }
-        mx_custom_bubble_sort(temp, mx_cmp_c);
         // mx_ls_l(argc, argv[i], temp);
         // mx_ls_big_r(temp);
+        // mx_custom_bubble_sort(temp, mx_cmp_c);
+        mx_ls_g(argc, argv[i], temp);
         if (argc > 3 && i != argc - 1)
             mx_printchar('\n');
         // print_opendir(temp, argc, argv, i);
