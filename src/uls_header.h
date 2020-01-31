@@ -14,6 +14,17 @@
 #include <errno.h>
 #include <dirent.h>
 
+
+#define LS_COLOR_RED        "\x1b[31m"
+#define LS_COLOR_GREEN      "\x1b[32m"
+#define LS_COLOR_BOLD_GREEN "\x1b[32;1m"
+#define LS_COLOR_YELLOW     "\x1b[33m"
+#define LS_COLOR_BLUE       "\x1b[34m"
+#define LS_COLOR_MAGENTA    "\x1b[35m"
+#define LS_COLOR_BOLD_CYAN  "\x1b[96;1m"
+#define LS_COLOR_RESET      "\x1b[0m"
+
+
 typedef struct general {
     char **d_str;
 }   st_general;
@@ -46,6 +57,9 @@ int mx_cmp_c(char *s1, char *s2);
 //
 // smal G flag
 void mx_ls_g(int argc, char *dirname, char **file_name);
+//
+// Big G flag
+void mx_big_g(int argc, char *dirname, char **temp);
 //
 
 #endif
