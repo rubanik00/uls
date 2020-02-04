@@ -18,14 +18,42 @@ void *mx_getGroupName(struct stat fileStat) {
         return mx_itoa(fileStat.st_gid);
 }
 
-void mx_edit_time(char *t) {
-    for(int i = 4; i < 16; i++)
-        mx_printchar(t[i]);
+void mx_edit_time(struct stat fileStat, char *t) {
+    if (1564876800 >= fileStat.st_mtime) {
+        for(int i = 4; i < 10; i++)
+            mx_printchar(t[i]);
+        mx_printchar(' ');
+        for (int i = 20; i < 24; i++) {
+           mx_printchar(t[i]); 
+        }
+    }
+    else {
+        for(int i = 4; i < 16; i++)
+            mx_printchar(t[i]);
+    }
+}
+
+char mx_check_per(struct stat fileStat) {
+    if (S_ISDIR(fileStat.st_mode))
+        return 'd';
+    if (S_ISLNK(fileStat.st_mode))
+        return 'l';
+    if (S_ISBLK(fileStat.st_mode))
+        return 'b';
+    if (S_ISCHR(fileStat.st_mode))
+        return 'c';
+    if (S_ISFIFO(fileStat.st_mode))
+        return 'p';
+    if (S_ISSOCK(fileStat.st_mode))
+        return 's';
+    if (S_ISWHT(fileStat.st_mode))
+        return 'w';
+    return '-';
 }
 
 void mx_print_per(struct stat fileStat) {
 
-    mx_printstr( (S_ISDIR(fileStat.st_mode)) ? "d" : "-");
+    mx_printchar(mx_check_per(fileStat));
     mx_printstr( (fileStat.st_mode & S_IRUSR) ? "r" : "-");
     mx_printstr( (fileStat.st_mode & S_IWUSR) ? "w" : "-");
     mx_printstr( (fileStat.st_mode & S_IXUSR) ? "x" : "-");
@@ -48,7 +76,8 @@ static void print_for_l(struct stat fileStat, char **file_name, int i) {
     mx_printstr("  ");
     mx_printint(fileStat.st_size);
     mx_printstr(" ");
-    mx_edit_time(ctime(&fileStat.st_mtime)); 
+    mx_printstr(" ");
+    mx_edit_time(fileStat, ctime(&fileStat.st_mtime)); 
     mx_printstr("\t");
     mx_printstr(file_name[i]);
     mx_printstr("\n");

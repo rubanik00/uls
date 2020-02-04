@@ -8,7 +8,7 @@ static void print_for_g(struct stat fileStat, char **file_name, int i) {
     mx_printstr("  ");
     mx_printint(fileStat.st_size);
     mx_printstr(" ");
-    mx_edit_time(ctime(&fileStat.st_mtime)); 
+    mx_edit_time(fileStat, ctime(&fileStat.st_mtime)); 
     mx_printstr("\t");
     mx_printstr(file_name[i]);
     mx_printstr("\n");

@@ -16,14 +16,9 @@
 
 
 #define LS_COLOR_RED        "\x1b[31m"
-#define LS_COLOR_GREEN      "\x1b[32m"
-#define LS_COLOR_BOLD_GREEN "\x1b[32;1m"
-#define LS_COLOR_YELLOW     "\x1b[33m"
-#define LS_COLOR_BLUE       "\x1b[34m"
-#define LS_COLOR_MAGENTA    "\x1b[35m"
-#define LS_COLOR_BOLD_CYAN  "\x1b[96;1m"
 #define LS_COLOR_RESET      "\x1b[0m"
 
+#define MX_IS_EXEC(mode) ((mode) & S_IXUSR)
 
 typedef struct general {
     char **d_str;
@@ -41,7 +36,8 @@ void mx_print_folder_search(st_general *gnr);
 void mx_ls_l(int argc, char *dirname, char **file_name);
 const char *mx_getUserName();
 void *mx_getGroupName(struct stat fileStat);
-void mx_edit_time(char *t);
+void mx_edit_time(struct stat fileStat, char *t);
+char mx_check_per(struct stat fileStat);
 void mx_print_per(struct stat fileStat);
 //
 // Big R flag
