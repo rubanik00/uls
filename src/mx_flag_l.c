@@ -1,4 +1,4 @@
-#include "uls_header.h"
+        #include "uls_header.h"
 
 const char *mx_getUserName() {
     uid_t uid = geteuid();
@@ -51,6 +51,24 @@ char mx_check_per(struct stat fileStat) {
     return '-';
 }
 
+// static void mx_check_max(struct stat fileStat, char **file_name) {
+//     int tmp = 0;
+//     int i = 0;
+//     while (file_name[i]) {
+//         if (tmp < fileStat.st_nlink) {
+//             tmp = fileStat.st_nlink;
+//         }
+//         i++;
+//     }
+//     mx_printint(tmp);
+//     // mx_printchar('\n');
+// }
+
+// static void mx_print_spaces(struct stat fileStat, char **file_name) {
+//     mx_check_max(fileStat, file_name);
+//     mx_printchar(' ');
+// }
+
 void mx_print_per(struct stat fileStat) {
 
     mx_printchar(mx_check_per(fileStat));
@@ -66,27 +84,22 @@ void mx_print_per(struct stat fileStat) {
     mx_printstr("  ");
 }
 
-static void print_for_l(struct stat fileStat, char **file_name, int i) {
+// static void print_for_l(struct stat fileStat, char **file_name, int i) {
 
-    mx_printint(fileStat.st_nlink);
-    mx_printstr(" ");
-    mx_printstr(mx_getUserName());
-    mx_printstr("  ");
-    mx_printstr(mx_getGroupName(fileStat));
-    mx_printstr("  ");
-    mx_printint(fileStat.st_size);
-    mx_printstr(" ");
-    mx_printstr(" ");
-    mx_edit_time(fileStat, ctime(&fileStat.st_mtime)); 
-    mx_printstr("\t");
-    mx_printstr(file_name[i]);
-    mx_printstr("\n");
-}
+//     mx_printint(fileStat.st_nlink);
+//     mx_printstr(mx_getUserName());
+//     mx_printstr(mx_getGroupName(fileStat));
+//     mx_printint(fileStat.st_size);
+//     mx_edit_time(fileStat, ctime(&fileStat.st_mtime)); 
+//     mx_printstr(file_name[i]);
+//     mx_printchar('\n'); ///////////////
+// }
 
 void mx_ls_l(int argc, char *dirname, char **file_name) {
     struct stat fileStat;
     char *tmp = NULL;
     char *res = NULL;
+    int lnk = 0;
     int i = 0;
     int blk_size = 0;
 
@@ -115,7 +128,28 @@ void mx_ls_l(int argc, char *dirname, char **file_name) {
         else {
             lstat(file_name[i], &fileStat);
         }
+        // print ALL -l
+
         mx_print_per(fileStat);
-        print_for_l(fileStat, file_name, i);
+
+        // START link //
+        if (lnk < fileStat.st_nlink) {
+            lnk = fileStat.st_nlink;
+        }
+        if (mx_strlen(mx_itoa(fileStat.st_nlink)) == mx_strlen(mx_itoa(lnk))){
+            mx_printint(fileStat.st_nlink);
+        }
+        else if (mx_strlen(mx_itoa(fileStat.st_nlink)) < mx_strlen(mx_itoa(lnk))) {
+            int counter = mx_strlen(mx_itoa(fileStat.st_nlink));
+            while (counter != mx_strlen(mx_itoa(lnk))) {
+                mx_printstr(" ");
+                counter++;
+            }
+            mx_printint(fileStat.st_nlink);
+        }
+        mx_printstr("\n");
+        // END link //
+
+        // print_for_l(fileStat, file_name, i);
     }
 }
