@@ -34,7 +34,7 @@ void mx_print_folder_search(st_general *gnr);
 //
 // smal L flag
 void mx_ls_l(int argc, char *dirname, char **file_name);
-const char *mx_getUserName();
+void *mx_getUserName(struct stat fileStat);
 void *mx_getGroupName(struct stat fileStat);
 void mx_edit_time(struct stat fileStat, char *t);
 char mx_check_per(struct stat fileStat);
