@@ -1,10 +1,14 @@
 #include "libmx.h"
 
-double mx_pow(double n, int pow) {
-    if (pow == 0)
+double mx_pow(double n, unsigned int pow) {
+	double temp;
+
+    if (pow <= 0) {
         return 1;
-    else if (pow == 1)
-        return n;
-    else 
-        return n * mx_pow (n,pow - 1);
+    }
+    temp = n;
+    for(;pow-1 > 0; --pow) {
+        n *= temp;
+    }
+    return n;
 }

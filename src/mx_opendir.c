@@ -1,97 +1,85 @@
-#include "uls_header.h"
+#include "uls.h"
 
-// static void print_opendir(char **temp, int argc, char *argv[], int n) {
-//     int i = 0;
+static int check_a(char *name, st_fl *fl) {
+    if (fl->A != 1)
+        return 0;
+    if (mx_strcmp(name, ".") == 0)
+        return 0;
+    if (mx_strcmp(name, "..") == 0)
+        return 0;
+    return 1;
+}
 
-//     if (isatty(1)) {
-//         if (argc > 2) {
-//             mx_printstr(argv[n]);
-//             mx_printstr(":\n");
-//         }
-//         //mx_printDir(&(*temp));
-//         for (i = 0; temp[i + 1]; i++) {
-//             mx_printstr(temp[i]);
-//         	mx_printstr("\t");
-//         }
-//         mx_printstr(temp[i]);
-//         mx_printchar('\n');
-//         if (argc > 2 && n != argc - 1) {
-//             mx_printchar('\n');
-//         }
-//     }
-//     else {
-//         if (argc > 2) {
-//             mx_printstr(argv[n]);
-//             mx_printstr(":\n");
-//         }
-//         for (i = 0; temp[i]; i++) {
-//             mx_printstr(temp[i]);
-//             mx_printstr("\n");
-//         }
-//         if (argc > 2 && n != argc - 1)
-//             mx_printchar('\n');
-//         // mx_del_strarr(&temp);
-//     }
-// }
-
-
-void mx_opendir(int argc, char *argv[]) {
+static int count_read(t_li **arg, st_fl *fl) {
     int count = 0;
+    t_li *args = *arg;
     DIR *dptr;
     struct dirent *ds;
-    char **temp = NULL;
-    int i = 1;
-    char **arg = argv+1;
-    int size = 2;
 
-    if (argc > 3) {
-	    while (arg[size])
-	    	size++;
-	    mx_bubble_sort(arg, size);
-	}
-
-
-    if (argc != 2 && argc != 1)
-        i = 2;
-    for (; i < argc; i++, count = 0) {
-        if (argc == 2)
-            dptr = opendir(".");
-        else
-            dptr = opendir(argv[i]);
-        while ((ds = readdir(dptr)) != NULL) {
-            if (ds->d_name[0] != '.')
-                count++;
+    if (MX_IS_DIR(args->info.st_mode) || MX_IS_LNK(args->info.st_mode)) {
+        if ((dptr = opendir(args->path)) != NULL) {
+            while ((ds = readdir(dptr)) != NULL)
+                if (ds->d_name[0] != '.' 
+                    || check_a(ds->d_name, fl) == 1)
+                    count++;
+            closedir(dptr);
         }
-        closedir(dptr);
-        if (argc == 2)
-            dptr = opendir(".");
-        else
-            dptr = opendir(argv[i]);
-        temp = (char**)malloc(sizeof(char *) * (count + 1));
-        for (int j = 0; (ds = readdir(dptr));) {
-            if (ds->d_name[0] != '.') {
-                temp[j] = mx_strdup(ds->d_name);
-                temp[j + 1] = NULL;
-                j++;
+        else {
+            (*arg)->err = mx_strdup(strerror(errno));
+            fl->ex = 1;
+            return -1;
+        }
+    }
+    return count;
+}
+
+static t_li *create_he_node(char *name, char *path) {
+    t_li *node = (t_li *)malloc(1 * sizeof(t_li));
+
+    node->name = mx_strdup(name);
+    node->path = mx_strdup(path);
+    mx_join(&node->path, "/");
+    mx_join(&node->path, name);
+    node->err = NULL;
+    if (lstat(node->path, &(node->info)) == -1)
+        node->err = mx_strdup(strerror(errno));
+    node->open = NULL;
+    return node;
+}
+
+static void open_dir(t_li ***args, st_fl *fl) {
+    DIR *dptr;
+    struct dirent *ds;
+    int count = 0;
+
+    for (int i = 0; (*args)[i] != NULL; i++) {
+        count = count_read(&(*args)[i], fl);
+        if (count > 0) {
+            (*args)[i]->open = malloc((count + 1) * sizeof(t_li *));
+            if ((dptr = opendir((*args)[i]->path)) != NULL) {
+                for (count = 0; (ds = readdir(dptr)) != NULL;)
+                    if (ds->d_name[0] != '.' 
+                        || check_a(ds->d_name, fl) == 1)
+                        (*args)[i]->open[count++] = 
+                        create_he_node(ds->d_name, (*args)[i]->path);
+                (*args)[i]->open[count] = NULL;
+            closedir(dptr);
             }
         }
-        closedir(dptr);
-        size = 0;
-        while(temp[size])
-        	size++;
-        mx_bubble_sort(temp, size);
-        if (argc > 3) {
-            mx_printstr(argv[i]);
-            mx_printstr(":\ntotal 0\n");
-        }
-        mx_ls_l(argc, argv[i], temp);
-        // mx_ls_big_r(temp);
-        // mx_custom_bubble_sort(temp, mx_cmp_c);
-        // mx_ls_g(argc, argv[i], temp);
-        // mx_big_g(argc, argv[i], temp);
-        if (argc > 3 && i != argc - 1)
-            mx_printchar('\n');
-        // print_opendir(temp, argc, argv, i);
-        // mx_del_strarr(&temp);
     }
+    mx_out_put_all(args, fl);
+}
+
+void mx_opendir(t_li ***args, st_fl *fl) {
+    t_li **files = mx_get_files(&(*args), fl);
+
+	if (files) {
+		mx_out_put_menu(&files, fl, 0);
+		if (*args)
+			mx_printchar('\n');
+		fl->files = 1;
+        mx_del_arr_arr(&files);
+	}
+    if (*args)
+        open_dir(&(*args), fl);
 }
